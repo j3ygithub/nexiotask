@@ -1,4 +1,7 @@
-from flask import Flask, jsonify, request, abort
+from flask import Flask, abort, jsonify, request
+from flask import Response
+import json
+
 
 app = Flask(__name__)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
@@ -29,13 +32,13 @@ def user_list():
 
 @app.route("/users", methods=["POST"])
 def user_create():
-    request_data = request.get_json()
     user = {
-        "name": request_data["name"],
-        "job_title": request_data["name"],
+        "name": request.values["name"],
+        "job_title": request.values["job_title"],
     }
     users.append(user)
-    return jsonify(user)
+    response = json.dumps(users, indent=4)
+    return Response(response, status=201, mimetype='application/json')
 
 
 def get_resource(resources, pk, pk_field='id'):
