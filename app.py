@@ -1,6 +1,4 @@
 from flask import Flask, abort, jsonify, request
-from flask import Response
-import json
 
 
 app = Flask(__name__)
@@ -27,7 +25,7 @@ users = [
 
 @app.route("/users", methods=["GET"])
 def user_list():
-    return jsonify({"users": users})
+    return jsonify(users)
 
 
 @app.route("/users", methods=["POST"])
@@ -37,8 +35,8 @@ def user_create():
         "job_title": request.values["job_title"],
     }
     users.append(user)
-    response = json.dumps(users, indent=4)
-    return Response(response, status=201, mimetype='application/json')
+    status = 201
+    return jsonify(user), status
 
 
 def get_resource(resources, pk, pk_field='id'):

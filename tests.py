@@ -1,4 +1,3 @@
-from typing import List
 import unittest
 import requests
 
@@ -15,9 +14,7 @@ class TestUserApi(unittest.TestCase):
         url = self.BASE_URL + path
         response = self.session.get(url)
         data = response.json()
-        self.assertIn("users", data)
-        users = data['users']
-        self.assertIsInstance(users, list)
+        self.assertIsInstance(data, list)
 
     def test_user_create(self):
         path = '/users'
@@ -28,7 +25,6 @@ class TestUserApi(unittest.TestCase):
         }
         response = self.session.post(url, data)
         self.assertEqual(response.status_code, 201)
-        print(response.json())
         self.assertEqual(response.json(), data)
 
 
