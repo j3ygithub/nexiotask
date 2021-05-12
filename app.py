@@ -1,30 +1,25 @@
 from flask import Flask, abort, jsonify, request
+from flask_sqlalchemy import SQLAlchemy
 
-
+# Configs
 app = Flask(__name__)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
-
-users = [
-    {
-        "id": 1,
-        "name": "Charles",
-        "job_title": "SRE",
-    },
-    {
-        "id": 2,
-        "name": "Allen",
-        "job_title": "SRE",
-    },
-    {
-        "id": 3,
-        "name": "Jason",
-        "job_title": "Backend Engineer",
-    },
-]
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sqlite.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
 
+# Models
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+
+
+# Views
 @app.route("/users", methods=["GET"])
 def user_list():
+    users = User.query.all()
     return jsonify(users)
 
 
