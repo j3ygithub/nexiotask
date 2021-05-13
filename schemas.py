@@ -1,5 +1,5 @@
-from settings import ma
 from models import User
+from settings import ma
 
 
 class UserSchema(ma.SQLAlchemyAutoSchema):

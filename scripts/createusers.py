@@ -1,6 +1,6 @@
-from models import db
-from models import User
 import json
+
+from models import User, db
 
 if __name__ == "__main__":
     charles_data = {

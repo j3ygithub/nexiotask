@@ -1,7 +1,9 @@
 from flask import jsonify, request
-from settings import db, app
+from werkzeug.exceptions import abort
+
 from models import User
 from schemas import UserSchema
+from settings import app, db
 
 
 @app.route("/")
@@ -23,13 +25,15 @@ def user_create():
     db.session.add(user)
     db.session.commit()
     user_schema = UserSchema()
-    data = user_schema.dump(request.values)
+    data = user_schema.load(request.values)
     return jsonify(data), 201
 
 
 @app.route("/users/<int:id>", methods=["GET"])
 def user_retrieve(id):
     user = User.query.get(id)
+    if not user:
+        abort(404)
     user_schema = UserSchema()
     data = user_schema.dump(user)
     return jsonify(data)
@@ -38,14 +42,18 @@ def user_retrieve(id):
 @app.route("/users/<int:id>", methods=["PUT"])
 def user_update(id):
     user = User.query.get(id)
+    if not user:
+        abort(404)
     db.session.delete(user)
-    db.session.commit(user)
-    return jsonify(), 204
+    db.session.commit()
+    return jsonify(), 200
 
 
 @app.route("/users/<int:id>", methods=["DELETE"])
-def user_destroy():
+def user_destroy(id):
     user = User.query.get(id)
+    if not user:
+        abort(404)
     db.session.delete(user)
-    db.session.commit(user)
-    return jsonify()
+    db.session.commit()
+    return jsonify(), 204
