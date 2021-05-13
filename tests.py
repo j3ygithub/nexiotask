@@ -1,9 +1,11 @@
 import unittest
 import requests
+from settings import HOST, PORT
 
 
 class TestUserApi(unittest.TestCase):
     def setUp(self):
+        self.BASE_URL = f'http://{HOST}:{PORT}'
         self.session = requests.session()
 
     def test_user_list(self):
@@ -19,10 +21,17 @@ class TestUserApi(unittest.TestCase):
         data = {
             "name": "Jackson",
             "job_title": "PM",
+            "communicate_information": "123",
         }
         response = self.session.post(url, data)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.json(), data)
+
+    def test_user_delete(self):
+        path = '/users/1'
+        url = self.BASE_URL + path
+        response = self.session.delete(url)
+        self.assertEqual(response.status_code, 204)
 
 
 if __name__ == '__main__':
