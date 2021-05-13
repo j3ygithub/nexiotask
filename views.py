@@ -1,6 +1,7 @@
-from flask import jsonify
+from flask import jsonify, request
 from settings import app
-from models import User, UserSchema
+from models import User
+from schemas import UserSchema
 
 
 @app.route("/")
@@ -8,7 +9,7 @@ def index():
     return {"msg": "hello world!"}
 
 
-@app.route("/users")
+@app.route("/users", methods=["GET"])
 def user_list():
     users = User.query.all()
     users_schema = UserSchema(many=True)
@@ -16,16 +17,23 @@ def user_list():
     return jsonify(data)
 
 
+@app.route("/users/<int:id>", methods=["GET"])
+def user_retrieve(id):
+    user = User.query.get(id)
+    user_schema = UserSchema()
+    data = user_schema.dump(user)
+    return jsonify(data)
 
-# @app.route("/users", methods=["POST"])
-# def user_create():
-#     user = {
-#         "name": request.values["name"],
-#         "job_title": request.values["job_title"],
-#     }
-#     users.append(user)
-#     status = 201
-#     return jsonify(user), status
+
+@app.route("/users", methods=["POST"])
+def user_create():
+    user = {
+        "name": request.values["name"],
+        "job_title": request.values["job_title"],
+    }
+    user = User(user)
+    status = 201
+    return jsonify(user), status
 
 
 # def get_resource(resources, pk, pk_field='id'):

@@ -1,12 +1,8 @@
-from settings import db, ma
+from settings import db
 
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-
-
-class UserSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = User
+    name = db.Column(db.String(63))
+    job_title = db.Column(db.String(63))
+    communicate_information = db.Column(db.String(255))
