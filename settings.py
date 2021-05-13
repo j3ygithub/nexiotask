@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 
+
 app = Flask(__name__)
 
 app.config["JSONIFY_PRETTYPRINT_REGULAR"] = True

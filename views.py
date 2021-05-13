@@ -1,13 +1,20 @@
-from flask import abort, jsonify, request
+from flask import jsonify
 from settings import app
-from models import User
+from models import User, UserSchema
 
 
-# Views
-@app.route("/users", methods=["GET"])
+@app.route("/")
+def index():
+    return {"msg": "hello world!"}
+
+
+@app.route("/users")
 def user_list():
     users = User.query.all()
-    return jsonify(users)
+    users_schema = UserSchema(many=True)
+    data = users_schema.dump(users)
+    return jsonify(data)
+
 
 
 # @app.route("/users", methods=["POST"])
