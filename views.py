@@ -1,9 +1,9 @@
-from flask import jsonify, request
-from werkzeug.exceptions import abort
+from flask import jsonify, request, abort
 
-from models import User
-from schemas import UserSchema
-from settings import app, db
+from models import db, User, UserSchema
+from apps import create_app
+
+app = create_app("development")
 
 
 @app.route("/")
