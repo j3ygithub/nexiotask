@@ -2,7 +2,8 @@ import json
 
 from models import User, db
 
-if __name__ == "__main__":
+
+def create_fake_users():
     charles_data = {
         "name": "Charles",
         "job_title": "SRE",
@@ -28,3 +29,7 @@ if __name__ == "__main__":
     allen = User(**allen_data)
     db.session.add(allen)
     db.session.commit()
+
+
+if __name__ == "__main__":
+    create_fake_users()
