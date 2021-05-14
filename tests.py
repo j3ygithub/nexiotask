@@ -43,7 +43,6 @@ class TestUserApi(unittest.TestCase):
         }
         response = self.session.put(url, data)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), data)
 
     def test_user_delete(self):
         path = '/users/1'
