@@ -1,17 +1,11 @@
-from flask import jsonify, request, abort
+from flask import Blueprint, abort, jsonify, request
 
-from models import db, User, UserSchema
-from apps import create_app
+from models import User, UserSchema, db
 
-app = create_app("development")
-
-
-@app.route("/")
-def index():
-    return {"msg": "hello world!"}
+user = Blueprint("user", __name__)
 
 
-@app.route("/users", methods=["GET"])
+@user.route("/users", methods=["GET"])
 def user_list():
     users = User.query.all()
     users_schema = UserSchema(many=True)
@@ -19,7 +13,7 @@ def user_list():
     return jsonify(data)
 
 
-@app.route("/users", methods=["POST"])
+@user.route("/users", methods=["POST"])
 def user_create():
     user = User(**request.values)
     db.session.add(user)
@@ -29,7 +23,7 @@ def user_create():
     return jsonify(data), 201
 
 
-@app.route("/users/<int:id>", methods=["GET"])
+@user.route("/users/<int:id>", methods=["GET"])
 def user_retrieve(id):
     user = User.query.get(id)
     if not user:
@@ -39,7 +33,7 @@ def user_retrieve(id):
     return jsonify(data)
 
 
-@app.route("/users/<int:id>", methods=["PUT"])
+@user.route("/users/<int:id>", methods=["PUT"])
 def user_update(id):
     user = User.query.get(id)
     if not user:
@@ -49,7 +43,7 @@ def user_update(id):
     return jsonify(), 200
 
 
-@app.route("/users/<int:id>", methods=["DELETE"])
+@user.route("/users/<int:id>", methods=["DELETE"])
 def user_destroy(id):
     user = User.query.get(id)
     if not user:

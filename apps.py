@@ -17,7 +17,7 @@ class TestingConfig:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JSONIFY_PRETTYPRINT_REGULAR = True
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = "sqlite:///sqlite-test.db"
+    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
 
 
 def create_app(app_name):
@@ -37,4 +37,13 @@ def create_app(app_name):
     app.config.from_object(config)
     db.init_app(app)
     ma.init_app(app)
+
+    from core.views import core
+
+    app.register_blueprint(core)
+
+    from user.views import user
+
+    app.register_blueprint(user)
+
     return app
