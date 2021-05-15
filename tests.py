@@ -5,7 +5,6 @@ from flask import url_for
 from flask_testing import TestCase
 
 from apps import create_app, db
-from models import User
 
 
 class TestUserApi(TestCase):
