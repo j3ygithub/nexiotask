@@ -1,16 +1,17 @@
 import json
-import unittest
+
+from flask_testing import TestCase
 
 from apps import create_app, db
 
 
-class TestUserApi(unittest.TestCase):
+class TestUserApi(TestCase):
+
+    def create_app(self):
+        return create_app("testing")
+
     def setUp(self):
-        self.app = create_app("testing")
-        self.app.app_context().push()
-        self.client = self.app.test_client()
-        self.db = db
-        self.db.create_all()
+        db.create_all()
         self.BASE_URL = "http://127.0.0.1:5000"
 
     def test_user_list(self):
@@ -55,7 +56,8 @@ class TestUserApi(unittest.TestCase):
     #     self.assertEqual(response.status_code, 204)
 
     def tearDown(self):
-        self.db.drop_all()
+        db.session.remove()
+        db.drop_all()
 
 
 if __name__ == "__main__":
