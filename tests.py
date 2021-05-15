@@ -7,7 +7,9 @@ from flask_testing import TestCase
 from apps import create_app, db
 
 
-class TestUserApi(TestCase):
+class UserViewTestCase(TestCase):
+    """Test the views of user APP"""
+
     def create_app(self):
         app = create_app("testing")
         return app
@@ -80,6 +82,26 @@ class TestUserApi(TestCase):
         response = self.client.post(url, json=payload)
         self.assertEqual(response.status_code, 500)
 
+    def test_user_retrieve(self):
+        url = url_for("user.user_create")
+        payload = {
+            "name": "Jackson",
+            "job_title": "PM",
+            "communicate_information": json.dumps(
+                {
+                    "email": "jackson@gmail.com",
+                    "mobile": "09xx-xxx-xxx",
+                }
+            ),
+        }
+        response = self.client.post(url, json=payload)
+        self.assertEqual(response.status_code, 201)
+        url = url_for("user.user_retrieve", pk=1)
+        response = self.client.get(url, json=payload)
+        self.assertEqual(response.status_code, 200)
+        expected_payload = dict(**payload, id=1)
+        self.assertEqual(response.json, expected_payload)
+
     def test_user_update(self):
         url = url_for("user.user_create")
         payload = {
@@ -98,13 +120,43 @@ class TestUserApi(TestCase):
         payload = {
             "name": "Jackson",
             "job_title": "PM",
-            "communicate_information": json.dumps({
-                "email": "jackson@yahoo.com.tw",
-                "mobile": "09xx-xxx-xxx",
-            }),
+            "communicate_information": json.dumps(
+                {
+                    "email": "jackson@yahoo.com.tw",
+                    "mobile": "09xx-xxx-xxx",
+                }
+            ),
         }
         response = self.client.put(url, json=payload)
         self.assertEqual(response.status_code, 200)
+
+    def test_user_update_with_invalid_payload(self):
+        url = url_for("user.user_create")
+        payload = {
+            "name": "Jackson",
+            "job_title": "PM",
+            "communicate_information": json.dumps(
+                {
+                    "email": "jackson@gmail.com",
+                    "mobile": "09xx-xxx-xxx",
+                }
+            ),
+        }
+        response = self.client.post(url, json=payload)
+        self.assertEqual(response.status_code, 201)
+        url = url_for("user.user_update", pk=1)
+        payload = {
+            "name": 123,
+            "job_title": "PM",
+            "communicate_information": json.dumps(
+                {
+                    "email": "jackson@gmail.com",
+                    "mobile": "09xx-xxx-xxx",
+                }
+            ),
+        }
+        response = self.client.put(url, json=payload)
+        self.assertEqual(response.status_code, 500)
 
     def test_user_delete(self):
         url = url_for("user.user_create")
@@ -124,10 +176,12 @@ class TestUserApi(TestCase):
         payload = {
             "name": "Jackson",
             "job_title": "PM",
-            "communicate_information": json.dumps({
-                "email": "jackson@yahoo.com.tw",
-                "mobile": "09xx-xxx-xxx",
-            }),
+            "communicate_information": json.dumps(
+                {
+                    "email": "jackson@yahoo.com.tw",
+                    "mobile": "09xx-xxx-xxx",
+                }
+            ),
         }
         response = self.client.delete(url, json=payload)
         self.assertEqual(response.status_code, 204)

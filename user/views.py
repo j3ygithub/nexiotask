@@ -35,9 +35,8 @@ def user_retrieve(pk):
     user = User.query.get(pk)
     if not user:
         abort(404)
-    user_schema = UserSchema()
-    data = user_schema.dump(user)
-    return jsonify(data)
+    data = UserSchema().dump(user)
+    return jsonify(data), 200
 
 
 @user.route("/users/<int:pk>", methods=["PUT"])
@@ -45,16 +44,26 @@ def user_update(pk):
     user = User.query.get(pk)
     if not user:
         abort(404)
-    db.session.delete(user)
-    db.session.commit()
-    return jsonify(), 200
+    data = request.get_json()
+    try:
+        cleaned_data = UserSchema().load(data)
+    except ValidationError:
+        abort(500)
+    for key, value in cleaned_data.items():
+        setattr(user, key, value)
+    try:
+        db.session.commit()
+    except IntegrityError:
+        abort(500)
+    return jsonify(cleaned_data), 200
 
 
 @user.route("/users/<int:pk>", methods=["DELETE"])
 def user_destroy(pk):
     user = User.query.get(pk)
-    if not user:
-        abort(404)
     db.session.delete(user)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except IntegrityError:
+        abort(500)
     return jsonify(), 204
