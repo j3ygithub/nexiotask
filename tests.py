@@ -1,4 +1,5 @@
 import json
+import unittest
 
 from flask_testing import TestCase
 
@@ -34,6 +35,20 @@ class TestUserApi(TestCase):
         response = self.client.post(url, json=payload)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.json, payload)
+
+    def test_invalid_user_create(self):
+        path = "/users"
+        url = self.BASE_URL + path
+        payload = {
+            "name": 123,
+            "job_title": "PM",
+            "communicate_information": json.dumps({
+                "email": "jackson@gmail.com",
+                "mobile": "09xx-xxx-xxx",
+            }),
+        }
+        response = self.client.post(url, json=payload)
+        self.assertEqual(response.status_code, 500)
 
     # def test_user_update(self):
     #     path = "/users/1"

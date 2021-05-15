@@ -1,6 +1,7 @@
 from flask import Blueprint, abort, jsonify, request
 
 from models import User, UserSchema, db
+from marshmallow.exceptions import ValidationError
 
 user = Blueprint("user", __name__)
 
@@ -15,12 +16,15 @@ def user_list():
 
 @user.route("/users", methods=["POST"])
 def user_create():
-    user = User(**request.values)
+    data = request.get_json()
+    try:
+        cleaned_data = UserSchema().load(data)
+    except ValidationError:
+        abort(500)
+    user = User(**cleaned_data)
     db.session.add(user)
     db.session.commit()
-    user_schema = UserSchema()
-    data = user_schema.load(request.values)
-    return jsonify(data), 201
+    return jsonify(cleaned_data), 201
 
 
 @user.route("/users/<int:id>", methods=["GET"])
