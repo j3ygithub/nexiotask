@@ -1,7 +1,7 @@
 from flask import Blueprint, abort, jsonify, request
-
-from models import User, UserSchema, db
 from marshmallow.exceptions import ValidationError
+from sqlalchemy.exc import IntegrityError
+from models import User, UserSchema, db
 
 user = Blueprint("user", __name__)
 
@@ -23,13 +23,16 @@ def user_create():
         abort(500)
     user = User(**cleaned_data)
     db.session.add(user)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except IntegrityError:
+        abort(500)
     return jsonify(cleaned_data), 201
 
 
-@user.route("/users/<int:id>", methods=["GET"])
-def user_retrieve(id):
-    user = User.query.get(id)
+@user.route("/users/<int:pk>", methods=["GET"])
+def user_retrieve(pk):
+    user = User.query.get(pk)
     if not user:
         abort(404)
     user_schema = UserSchema()
@@ -37,9 +40,9 @@ def user_retrieve(id):
     return jsonify(data)
 
 
-@user.route("/users/<int:id>", methods=["PUT"])
-def user_update(id):
-    user = User.query.get(id)
+@user.route("/users/<int:pk>", methods=["PUT"])
+def user_update(pk):
+    user = User.query.get(pk)
     if not user:
         abort(404)
     db.session.delete(user)
@@ -47,9 +50,9 @@ def user_update(id):
     return jsonify(), 200
 
 
-@user.route("/users/<int:id>", methods=["DELETE"])
-def user_destroy(id):
-    user = User.query.get(id)
+@user.route("/users/<int:pk>", methods=["DELETE"])
+def user_destroy(pk):
+    user = User.query.get(pk)
     if not user:
         abort(404)
     db.session.delete(user)
