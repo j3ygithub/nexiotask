@@ -1,6 +1,6 @@
 import argparse
 
-from apps import create_app, db
+from settings import create_app, db
 
 
 def runserver():

@@ -4,7 +4,8 @@ from sqlalchemy.exc import IntegrityError
 
 from core import status_codes
 from core.utils import get_object_or_404
-from models import User, UserSchema, db
+
+from .models import User, UserSchema, db
 
 user = Blueprint("user", __name__)
 

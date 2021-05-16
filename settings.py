@@ -2,10 +2,22 @@ from flask import Flask
 from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
 
-from configs import DevelopmentConfig, TestingConfig
-
 db = SQLAlchemy()
 ma = Marshmallow()
+
+
+class DevelopmentConfig:
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    JSONIFY_PRETTYPRINT_REGULAR = True
+    TESTING = False
+    SQLALCHEMY_DATABASE_URI = "sqlite:///sqlite.db"
+
+
+class TestingConfig:
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    JSONIFY_PRETTYPRINT_REGULAR = True
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
 
 
 def create_app(app_name):
