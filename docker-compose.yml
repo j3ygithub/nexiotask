@@ -1,0 +1,7 @@
+services:
+
+    flask:
+      build: ./flask
+      container_name: template_flask
+      expose:
+        - 5000

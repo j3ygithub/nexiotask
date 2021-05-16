@@ -1,11 +1,11 @@
 import argparse
 
-from settings import create_app, db
+from app import create_app, db
 
 
 def runserver():
     app = create_app("development")
-    app.run()
+    app.run(host="0.0.0.0")
 
 
 def db_create_all():

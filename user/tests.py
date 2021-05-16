@@ -5,7 +5,7 @@ from flask import url_for
 from flask_testing import TestCase
 
 from core import status_codes
-from settings import create_app, db
+from app import create_app, db
 
 
 class UserViewTestCase(TestCase):
