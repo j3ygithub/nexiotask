@@ -4,8 +4,8 @@ import unittest
 from flask import url_for
 from flask_testing import TestCase
 
-from core import status_codes
 from app import create_app, db
+from core import status_codes
 
 
 class UserViewTestCase(TestCase):
