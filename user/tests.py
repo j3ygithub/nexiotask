@@ -98,10 +98,28 @@ class UserViewTestCase(TestCase):
         response = self.client.post(url, json=payload)
         self.assertEqual(response.status_code, status_codes.CREATED)
         url = url_for("user.user_retrieve", pk=1)
-        response = self.client.get(url, json=payload)
+        response = self.client.get(url)
         self.assertEqual(response.status_code, status_codes.OK)
         expected_payload = dict(**payload, id=1)
         self.assertEqual(response.json, expected_payload)
+
+    def test_user_retrieve_with_not_existing_user(self):
+        url = url_for("user.user_create")
+        payload = {
+            "name": "Jackson",
+            "job_title": "PM",
+            "communicate_information": json.dumps(
+                {
+                    "email": "jackson@gmail.com",
+                    "mobile": "09xx-xxx-xxx",
+                }
+            ),
+        }
+        response = self.client.post(url, json=payload)
+        self.assertEqual(response.status_code, status_codes.CREATED)
+        url = url_for("user.user_retrieve", pk=2)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status_codes.NOT_FOUND)
 
     def test_user_update(self):
         url = url_for("user.user_create")
@@ -130,6 +148,7 @@ class UserViewTestCase(TestCase):
         }
         response = self.client.put(url, json=payload)
         self.assertEqual(response.status_code, status_codes.OK)
+        self.assertEqual(response.json, payload)
 
     def test_user_update_with_invalid_payload(self):
         url = url_for("user.user_create")
@@ -174,18 +193,28 @@ class UserViewTestCase(TestCase):
         response = self.client.post(url, json=payload)
         self.assertEqual(response.status_code, status_codes.CREATED)
         url = url_for("user.user_destroy", pk=1)
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status_codes.NO_CONTENT)
+
+    def test_user_delete_twice(self):
+        url = url_for("user.user_create")
         payload = {
             "name": "Jackson",
             "job_title": "PM",
             "communicate_information": json.dumps(
                 {
-                    "email": "jackson@yahoo.com.tw",
+                    "email": "jackson@gmail.com",
                     "mobile": "09xx-xxx-xxx",
                 }
             ),
         }
-        response = self.client.delete(url, json=payload)
+        response = self.client.post(url, json=payload)
+        self.assertEqual(response.status_code, status_codes.CREATED)
+        url = url_for("user.user_destroy", pk=1)
+        response = self.client.delete(url)
         self.assertEqual(response.status_code, status_codes.NO_CONTENT)
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status_codes.NOT_FOUND)
 
 
 if __name__ == "__main__":

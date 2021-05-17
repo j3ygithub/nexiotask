@@ -63,6 +63,12 @@ docker run -p 80:5000 'nexiotask'
 # Now you should see something on http://127.0.0.1/ with your browser.
 ```
 
+or simpler, run with docker-compose
+```bash
+docker-compose up
+# Now you should see something on http://127.0.0.1/ with your browser.
+```
+
 
 ## Meta
 

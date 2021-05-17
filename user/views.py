@@ -42,6 +42,6 @@ def user_update(pk):
 
 @user.route("/users/<int:pk>", methods=["DELETE"])
 def user_destroy(pk):
-    user = User.query.get(pk)
+    user = get_object_or_404(model=User, pk=pk)
     user.delete(db_session=db.session)
     return jsonify(), status_codes.NO_CONTENT
