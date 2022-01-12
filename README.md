@@ -1,6 +1,6 @@
 # nexiotask
 
-A user model api with flask. 😊
+A task from Nexio. A user model api with `flask`.
 
 ## Installation & Run
 
